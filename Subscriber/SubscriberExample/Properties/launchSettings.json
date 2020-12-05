@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SubscriberExample": {
+      "commandName": "Project",
+      "commandLineArgs": "TopicA"
+    }
+  }
+}
