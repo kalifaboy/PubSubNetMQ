@@ -6,7 +6,17 @@ namespace Broker
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            try
+            {
+                var broker = new Broker(10000, 15000);
+                broker.Launch();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
         }
     }
 }
