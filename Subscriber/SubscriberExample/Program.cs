@@ -18,11 +18,7 @@ namespace SubscriberExample
             Console.WriteLine($"Launching subscriber on topic {topicName}");
             subscriberSocket.ReceiveReady += SubscriberSocket_ReceiveReady;
             
-            poller.RunAsync();
-            while (true)
-            {
-
-            }
+            poller.Run();
         }
 
         private static void SubscriberSocket_ReceiveReady(object sender, NetMQSocketEventArgs e)
