@@ -1,7 +1,6 @@
 ﻿using NetMQ;
 using NetMQ.Sockets;
 using System;
-using System.Threading.Tasks;
 
 namespace Broker
 {
@@ -10,8 +9,8 @@ namespace Broker
         private readonly short _xPubPort;
         private readonly short _xSubPort;
 
-        private NetMQSocket _xPubSocket;
-        private NetMQSocket _xSubSocket;
+        private XPublisherSocket _xPubSocket;
+        private XSubscriberSocket _xSubSocket;
         public Broker(short xPubPort, short xSubPort)
         {
             _xPubPort = xPubPort;
@@ -26,6 +25,8 @@ namespace Broker
                 using (_xPubSocket = new XPublisherSocket($"@tcp://localhost:{_xPubPort}"))
                 using (_xSubSocket = new XSubscriberSocket($"@tcp://localhost:{_xSubPort}"))
                 {
+                    _xPubSocket.ReceiveReady += _xPubSocket_ReceiveReady;
+                    _xSubSocket.ReceiveReady += _xSubSocket_ReceiveReady;
                     var proxy = new Proxy(_xSubSocket, _xPubSocket);
                     Console.WriteLine("Broker started ..");
                     proxy.Start();
@@ -37,7 +38,18 @@ namespace Broker
                 Console.WriteLine($"Error : {ex.Message}");
                 throw;
             }
-            
+
+        }
+
+        private void _xSubSocket_ReceiveReady(object sender, NetMQSocketEventArgs e)
+        {
+            var msg = e.Socket.ReceiveMultipartMessage();
+            Console.WriteLine($"Dispatching message for topic {msg.First.ConvertToString()}");
+        }
+
+        private void _xPubSocket_ReceiveReady(object sender, NetMQSocketEventArgs e)
+        {
+
         }
     }
 }
